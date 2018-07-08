@@ -1,0 +1,158 @@
+ /*********************************************************************** 
+   **********    it's stack turn*******************************************
+************************************************************************/
+struct  stack_struct
+{
+    que_elem         *top_p;
+    que_elem         *bot_p;
+    int              no_of_elem;
+    int              stack_len;
+};
+
+// push stack
+bool stack_push_el(stack_struct  *stack_p,
+                   que_elem      *el_p)
+{
+    que_elem   *tmp_p;
+
+    if (stack_p->top_p == NULL) // No elements in stack.
+    {
+        stack_p->top_p = el_p;
+        stack_p->top_p->next_p = NULL;
+        stack_p->top_p->prev_p = NULL;
+        stack_p->bot_p = stack_p->top_p;
+        stack_p->no_of_elem = 1;
+        return(true);
+    }
+    else if (stack_p->no_of_elem < stack_p->stack_len)
+    {
+        stack_p->top_p->prev_p = el_p;
+        el_p->next_p = stack_p->top_p;
+        stack_p->top_p = el_p;
+        stack_p->no_of_elem++;
+        return(true);
+    }
+    
+    return(false);
+} 
+
+  // pop stack
+bool stack_pop_el(stack_struct  *stack_p,
+                  que_elem      **el_p)
+{
+
+    if (stack_p->top_p != NULL) // There are elements in stack.
+    {
+        *el_p = stack_p->top_p;
+
+        if (stack_p->top_p == stack_p->bot_p) // One element in stack.
+        {
+            stack_p->top_p = NULL;
+            stack_p->bot_p = NULL;
+            stack_p->no_of_elem = 0;
+        }
+        else
+        {
+            stack_p->top_p = stack_p->top_p->next_p;
+            stack_p->top_p->prev_p = NULL;
+            stack_p->no_of_elem--;
+        }
+        return(true);
+    }
+    return(false);
+}
+
+
+// initial the stack
+
+void initial_stack(stack_struct *stack_p)
+{
+    stack_p->top_p = NULL;
+    stack_p->bot_p = NULL;
+    stack_p->no_of_elem--;
+    stack_p->stack_len = 10;
+}
+
+
+//clear the stack
+
+void clear_stack(stack_struct *stack_p)
+{
+    que_elem   *tmp1_p, *tmp2_p;
+
+    tmp1_p = stack_p->top_p;
+
+    while (tmp1_p != NULL)
+    {
+        tmp2_p = tmp1_p->next_p;
+
+        delete tmp1_p;
+        tmp1_p = tmp2_p;
+    }
+    stack_p->top_p = NULL;
+    stack_p->no_of_elem = 0;
+}
+
+//print the stack
+void print_stack(stack_struct *stack)
+{
+    que_elem *tmp_p;
+    tmp_p = stack->top_p;
+    if (tmp_p == NULL)
+    {
+        cout << "The stack is empty" << endl;
+    }
+    while (tmp_p != NULL) 
+    {
+        cout << "stack element data value: " << tmp_p->data<<endl;
+        tmp_p = tmp_p->next_p;
+    }
+}
+
+
+
+
+
+
+
+
+
+/********************************main： operation and  test********************************************************/
+int main(void)
+{
+
+    cout << "*************queue******************" << endl;
+    que_struct que;
+    initial_queue(&que);
+    print_queue(&que);
+
+    int ele_no = 2;
+    for (int i = 0; i < ele_no;i++)
+    { 
+    que_elem *elem1_p = new que_elem();
+    elem1_p->data = i;
+    que_enq_el(&que,elem1_p);
+    }
+    print_queue(&que);
+    
+    clear_queue(&que);
+    print_queue(&que);
+    
+    
+    cout << "************stack*******************" << endl;
+    stack_struct stack;
+    initial_stack(&stack);
+    print_stack(&stack);
+
+    que_elem *elem3_p = new que_elem();
+    elem3_p->data = 8;
+    stack_push_el(&stack, elem3_p);
+    print_stack(&stack);
+
+    clear_stack(&stack);
+    print_stack(&stack);
+
+    char ch;
+    cin>>ch;
+    return 0;
+}

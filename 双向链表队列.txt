@@ -1,0 +1,151 @@
+ #include <iostream>
+using namespace std;
+
+// node definition
+struct que_elem {
+    que_elem* prev_p;
+    que_elem* next_p;
+    int data;
+};
+
+
+
+// queue definition
+
+struct que_struct {
+
+    que_elem* first_p;
+    que_elem* last_p;
+    int no_of_elem;
+    int que_len;
+};
+
+//Enque:   enqueue a new element to queue tail
+bool que_enq_el(que_struct  *que_p,
+                que_elem    *el_p)
+{
+    if (que_p->first_p == NULL) // No elements in queue.
+    {
+        que_p->first_p = el_p;
+        que_p->first_p->next_p = NULL;
+        que_p->first_p->prev_p = NULL;
+        que_p->last_p = que_p->first_p;
+        que_p->no_of_elem = 1;
+        return(true);
+    }
+    else if (que_p->no_of_elem < que_p->que_len)
+    {
+        que_p->last_p->next_p = el_p;
+        el_p->prev_p = que_p->last_p;
+        que_p->last_p = el_p;
+        que_p->last_p->next_p = NULL;
+        que_p->no_of_elem++;
+        return(true);
+    }
+    return(false);
+
+} 
+
+  //Dequeue: dequeue element from queue head
+bool que_deq_el(que_struct  *que_p,
+                que_elem    **el_p)
+{
+    if (que_p->first_p != NULL) // There are elements in the queue!
+    {
+        *el_p = que_p->first_p;
+
+        if (que_p->first_p == que_p->last_p) // There is exactly one element in teh queue.
+        {
+            que_p->first_p = NULL;
+            que_p->last_p = NULL;
+            que_p->no_of_elem = 0;
+        }
+        else
+        {
+            que_p->first_p = que_p->first_p->next_p;
+            que_p->first_p->prev_p = NULL;
+            que_p->no_of_elem--;
+        }
+
+        return(true);
+    }
+    return(false);
+
+} /* end que_deq_el */
+
+//  extract and cut  the link with a specific element
+void extract_el_from_queue(que_struct  *que_p,
+                           que_elem    *el_p)
+{
+    if (que_p->first_p == que_p->last_p) // One element in the queue.
+    {
+        que_p->first_p = NULL;
+        que_p->last_p = NULL;
+        que_p->no_of_elem = 0;
+    }
+    else if (el_p == que_p->first_p)
+    {
+        que_p->first_p = que_p->first_p->next_p;
+        que_p->first_p->prev_p = NULL;
+        que_p->no_of_elem--;
+    }
+    else if (el_p == que_p->last_p)
+    {
+        que_p->last_p = que_p->last_p->prev_p;
+        que_p->last_p->next_p = NULL;
+        que_p->no_of_elem--;
+    }
+    else
+    {
+        el_p->prev_p->next_p = el_p->next_p;
+        el_p->next_p->prev_p = el_p->prev_p;
+        que_p->no_of_elem--;
+    }
+
+} 
+
+  //  initial the queue
+void initial_queue(que_struct *que_p)
+{
+    que_p->first_p = NULL;
+    que_p->last_p = NULL;
+    que_p->que_len = 10;
+    que_p->no_of_elem = 0;
+}
+
+ //  Clear the queue
+void clear_queue(que_struct *que_p)
+{
+    que_elem   *tmp1_p, *tmp2_p;
+
+    tmp1_p = que_p->first_p;
+    
+    while (tmp1_p != NULL)
+    {
+        tmp2_p = tmp1_p->next_p;
+        delete tmp1_p;
+        tmp1_p = tmp2_p;
+    }
+    que_p->first_p = NULL;
+    que_p->last_p = NULL;
+    que_p->no_of_elem = 0;
+}
+
+//  Print the queue
+void print_queue(que_struct *que_p)
+{
+    que_elem *tmp1_p;
+    tmp1_p = que_p->first_p;
+
+    if (tmp1_p == NULL)
+    {
+        cout << "The queue is a empty" << endl;
+        return;
+    }
+
+    while (tmp1_p != NULL)
+    {
+        cout<<"The element's data is "<<tmp1_p->data<<endl;
+        tmp1_p = tmp1_p->next_p;
+    }
+}

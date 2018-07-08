@@ -1,0 +1,63 @@
+## 关于String类的部分实现： ##
+
+```
+typedef int size_t;
+
+classs String{
+public:
+    String(const char *str="");  
+    String(const String& copy);   
+    String& operator=(const String& assign); 
+    ~String();
+
+private:
+    char *m_data;
+    size_t m_size;
+}
+
+String::String(const char *str)
+{
+  if(str ==  NULL)
+  {
+     m_data = new char(1);
+    *m_data = '\0';
+     m_size = 0;
+  }
+  else
+  {
+     int len = strlen(str);
+	 m_data = new char[len+1];
+	 strcpy(m_data,str);
+	 m_size = len;
+
+  }
+}
+
+String::~String(void)
+{
+   delete [] m_data;
+}
+
+String::String(const String& copy)
+{
+     
+     int len = strlen(copy.m_data);
+	 m_data = new char[len+1];
+	 strcpy(m_data,copy.m_data);
+	 m_size = len;
+}
+
+String::String& operator=(const String& assign)
+{
+   if( &assign != this)
+   {        	 
+     int len = strlen(assign.m_data);
+	 char *temp = new char[len+1];
+	 strcpy(temp,assign.m_data);
+	 
+	 delete []m_data;
+     m_data = temp;	 
+	 m_size = len;
+   }
+     return *this;
+}
