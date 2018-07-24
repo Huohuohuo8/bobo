@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+
+struct node
+{
+	int data;
+	node *link;
+};
+
+void JOSEPHUS(int n, int k, int m)
+{
+	node *p, *r, *list, *cur;
+	p = (node *)malloc(sizeof(node));
+	p->data = 0;
+	p->link = p;
+	cur = p;
+	for (int i = 1; i<n; i++)
+	{
+		node *t = (node *)malloc(sizeof(node));
+		t->data = i;
+		t->link = cur->link;
+		cur->link = t;
+		cur = t;
+	}
+
+	r = cur;
+	while (k--)
+	{
+		r = p;
+		p = p->link;
+	}
+	while (n--)
+	{
+		for (int s = m - 1; s--; r = p, p = p->link);
+		r->link = p->link;
+		printf("%d->", p->data);
+		free(p);
+		p = r->link;
+	}
+}
+
+
+int  main()
+{
+	JOSEPHUS(13, 4, 3);
+
+	return 0;
+}
+
+// output: 6->9->12->2->5->10...
