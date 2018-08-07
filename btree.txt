@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+
+using namespace std;
+
+//template <class T>
+typedef int T;
+
+struct Btnode
+{
+	T d;
+	Btnode *lchild;
+	Btnode *rchild;
+};
+
+class B_Tree
+{
+	Btnode *BT;
+public:
+	B_Tree() { BT = NULL; return; }
+	void creat(T);
+	void intrav_binary_tree();
+};
+
+
+
+static int creat_s(Btnode *p, int k, T end)
+{
+	Btnode *q;
+	T x;
+	cin >> x;
+	if (end != x)
+	{
+		q = new Btnode;
+		q->d = x;
+		q->lchild = NULL;
+		q->rchild = NULL;
+		if (1 == k) p->lchild = q;
+		if (2 == k) p->rchild = q;
+		creat_s(q,1,end);
+		creat_s(q,2,end);
+	}
+	return 0;
+}
+
+void B_Tree::creat(T end)
+{
+	Btnode *p;
+	T x;
+	cin >> x;
+	if (end == x) return;
+	p = new Btnode;
+	p->d = x;
+	p->lchild = NULL;
+	p->rchild = NULL;
+	BT = p;
+	creat_s(p,1,end);
+	creat_s(p,2,end);
+	return;
+}
+
+static int intrav(Btnode *p)
+{
+	if (p)
+	{
+		intrav(p->lchild);
+		cout << p->d << " ";
+		intrav(p->rchild);
+	}
+	return 0;
+}
+
+void B_Tree::intrav_binary_tree()
+{
+	Btnode *p;
+	p = BT;
+	intrav(p);
+	cout << endl;
+	return;
+}
+
+int  main()
+{
+	B_Tree b_t;
+	b_t.creat(0);
+	b_t.intrav_binary_tree();
+	return 0;
+}
