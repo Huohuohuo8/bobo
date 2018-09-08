@@ -2,7 +2,7 @@
 
 function changeName(){
     echo $1
-    sed -i "s/vos_memset_safe/memset_s/g" $1
+    sed -i "s/old/new/g" $1
 }
 
 function travFolder(){ 
@@ -24,6 +24,6 @@ function travFolder(){
 
 
 #read dir
-dir=./uk_test
+dir=./test
 echo $dir
 travFolder $dir
