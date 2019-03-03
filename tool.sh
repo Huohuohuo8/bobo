@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+#bash
+
 function changeName(){
     echo $1
     sed -i "s/old/new/g" $1
