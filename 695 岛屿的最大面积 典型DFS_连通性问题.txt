@@ -1,0 +1,39 @@
+DFS ISLAND
+class Solution {
+public:
+    int di[4] = {-1,1,0,0};
+    int dj[4] = {0,0,-1,1};
+    
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int m = grid.size();
+        if(m < 1)
+            return 0;
+        int n = grid[0].size();
+        
+        int res = 0;
+        for(int i = 0;i < m;i++){
+            for(int j = 0;j < n;j++){
+                int t = dfs(grid,i,j,m,n);//每次返回的是该点 所在岛屿的面积
+                if(t > res)
+                    res = t;
+            }
+        }
+        return res;
+    }
+    
+    int dfs(vector<vector<int>>& grid,int i,int j,int m,int n){
+        int out = 0;
+        if(grid[i][j] == 1){ 
+            out = 1;//是岛屿，则out最少等于1  ，否则返回 0
+            grid[i][j] = 0;//已经遍历过的 点 设为0 ，避免下次遍历
+            for(int d = 0;d < 4;d++){
+                int x = i + di[d];
+                int y = j + dj[d];
+                if(x>=0 && x<m  && y>=0 && y<n){
+                    out = out + dfs(grid,x,y,m,n);
+                }
+            }
+        }
+        return out;
+    }
+};

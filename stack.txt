@@ -1,0 +1,64 @@
+STACK
+#include <stdlib.h>
+
+#define bool int
+#define OK 1
+#define FAIL 0
+#define MAXSIZE 100
+#define ELEM int
+
+typedef struct {
+	ELEM value[MAXSIZE];
+	int top;
+} stack;
+
+/* 创建顺序栈 */
+bool init(stack *s)  
+{
+	for(int i=0;i<MAXSIZE;i++) {
+		s->value[i] = 0;
+	}
+	s->top = -1;
+	return OK;
+}
+
+ /* 压栈 */
+bool push(stack *s, ELEM x)
+{
+    if(s->top == MAXSIZE)
+		return FAIL;
+	(s->top)++;
+	s->value[s->top] = x;
+	return OK;
+}
+
+/* 出栈 */
+bool pop(stack *s, ELEM *y) 
+{
+	if(s->top < 0)
+		return FAIL;
+	*y = s->value[s->top];
+	(s->top)--;
+	return OK;
+}
+
+/* 获得栈顶数值 */
+ELEM getTopValue(stack *s)  
+{
+	if(s->top < 0)
+		return -1;
+    return s->value[s->top];
+}
+
+/* 获得栈顶元素地址 */
+ELEM * getTop(stack *s)  
+{
+	if(s->top < 0)
+		return NULL;
+    return &(s->value[s->top]);
+}
+
+
+char * decodeString(char * s){    
+    return 0;
+}

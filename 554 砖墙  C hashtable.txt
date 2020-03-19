@@ -1,0 +1,199 @@
+HASH
+#define HashMaxSize 1000
+typedef int KeyType;
+typedef int ValueType;
+typedef int (*HashFunc)(KeyType key);
+ 
+typedef enum
+{                                                                                                                                  
+      Empty,//空状态
+     Valid,//有效状态
+     Delete,//被删改的状态
+}Stat;
+
+
+typedef struct HashElem
+{
+     KeyType key;
+      ValueType value;
+      struct HashElem* next;
+  }HashElem;
+
+
+  typedef struct HashTable
+  {
+      HashElem* data[HashMaxSize];
+      int size;
+     HashFunc func;
+  }HashTable;
+  
+
+
+
+
+
+
+  void HashInit(HashTable* hashtable,HashFunc hash_func)
+  {
+      if(hashtable == NULL)
+      {
+          //非法操作
+          return ;
+      }
+      hashtable->size = 0;
+      hashtable->func = hash_func;
+     int i = 0;
+    for(;i < HashMaxSize ; ++i)
+      {
+          hashtable->data[i] = NULL;
+      }
+      return ;
+  }
+
+
+
+
+   HashElem* CreateElem(KeyType key,ValueType value)
+  {
+     HashElem* new_node = (HashElem*)malloc(sizeof(HashElem));
+      new_node->key = key;
+      new_node->value = value;
+     new_node->next = NULL;
+     return new_node;
+ 
+  }
+  HashElem* HashBackedFind(HashElem* head,KeyType to_find)
+  {
+     HashElem* cur = head;
+    for(;cur != NULL ;cur = cur->next)
+     {
+          if(cur->key == to_find)
+          {
+              return cur ;
+          }
+      }
+      return NULL;
+  }
+
+
+
+   void HashInsert(HashTable* hashtable,KeyType key)
+  {
+      if(hashtable == NULL)
+     {
+         return ;
+     }
+      //1.根据key计算出offset
+     int offset = hashtable->func(key);
+      //2.在offset对应的链表中查找看当前的key是否存在,若存在就认为插入失败
+      HashElem* ret = HashBackedFind(hashtable->data[offset],key);
+      if(ret != NULL)
+      {
+        ret->value = ret->value +1;
+        return ;
+    }
+      //3.若不存在就可以插入，使用头插法
+      HashElem* new_node = CreateElem(key,1);
+      //头插法
+      new_node->next = hashtable->data[offset];
+      hashtable->data[offset] = new_node;
+    //4.++size
+    ++hashtable->size;
+     return;
+ }
+
+
+ int HashFind(HashTable* hashtable,KeyType key,ValueType* value)
+ {
+    if(hashtable == NULL || value == NULL)
+    {
+         return 0;
+     }
+     //1.根据key计算出offset
+   int offset = hashtable->func(key);
+     //2.找到对应的offset的链表，遍历链表，尝试找到其中的元素
+     HashElem* ret = HashBackedFind(hashtable->data[offset],key);
+     if(ret == NULL)
+     {
+         return 0;
+     }
+     *value = ret->value;
+     return 1;
+ }
+
+
+ void printHsh(HashTable* hashtable)
+ {
+
+     printf("hashtable size is %d\n", hashtable->size);
+
+     for(int i=0; i<HashMaxSize; i++){
+         if(hashtable->data[i])
+         {
+            HashElem* cur = hashtable->data[i];
+            for(;cur != NULL ;cur = cur->next)
+     {
+        printf("hash elem key:%d value:%d\n", cur->key, cur->value);
+      }
+
+         }
+
+     }
+ }
+
+
+ int calHashCode(KeyType key){
+     return key%HashMaxSize;
+ }
+
+
+ int getHashMaxValueofKey(HashTable* hashtable)
+ {
+     int maxValue = 0;
+     int key = 0;
+     for(int i=0; i<HashMaxSize; i++){
+         if(hashtable->data[i])
+         {
+            HashElem* cur = hashtable->data[i];
+            for(;cur != NULL ;cur = cur->next)
+     {
+        ///printf("hash elem key:%d value:%d\n", cur->key, cur->value);
+        if (cur->value > maxValue) 
+        {
+            maxValue = cur->value;
+            key = cur->key;
+            //printf("get max key %d value %d", maxValue, key);
+        }
+      }
+
+         }
+
+     }
+     return maxValue;
+ }
+
+
+int leastBricks(int** wall, int wallSize, int* wallColSize){
+     HashTable ht;
+
+     HashInit(&ht, calHashCode);
+
+    int sum;
+    for (int i=0;i< wallSize;i++)
+    {
+        sum = 0;
+        for (int j=0; j<wallColSize[i]-1; j++)
+        {
+                sum+=wall[i][j];
+                HashInsert(&ht, sum);
+         }
+    }
+    
+    
+    int maxvalueofkey = getHashMaxValueofKey(&ht);
+    
+    
+    
+    return wallSize - maxvalueofkey;
+}
+
